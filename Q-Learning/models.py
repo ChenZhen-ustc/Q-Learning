@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
-
+np.set_printoptions(suppress=True)
+np.set_printoptions(threshold = 1e9)
 class switch(object):
     def __init__(self, value):
         self.value = value
@@ -23,12 +24,18 @@ class switch(object):
 
 def compute_SINR(RSRP, numDrones, N0, BW):
     N = BW*N0
+    #if RSRP = [[1,2] , [3,4]]
     RSRP_lin = np.power(10,.1*RSRP)
     interference = np.repeat(RSRP_lin[:,:,np.newaxis], numDrones, axis=2)
+    #then RSRP_lin[:,:,np.newaxis] = [ [[1],[2]] , [[3],[4]] ]
+    #interference = [ [[1,1],[2,2]] , [[3,3],[4,4]] ]
     for i in range (numDrones):
         interference[:,i,i]= 0
+    #interference = [ [[0,1],[2,0]] , [[0,3],[4,0]] ]
     interference = np.sum(interference,axis=1)
+    #interference = [[2,1] , [4,3]]
     SINR = RSRP - 10*np.log10(N+interference)
+    #SINR = [[1,2] , [3,4]] - [[2,1] , [4,3]] = [[-1,1] , [-1,1]]
     return SINR
 
 def distance(x1,y1,z1,x2,y2,z2):

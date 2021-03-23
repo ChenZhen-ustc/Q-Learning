@@ -233,7 +233,8 @@ def main(args):
                 second_table_reword , action, Q_table[k] = Q.choose_max_action(dronePos[k][:2], Q_table[k])
                 allocVec, SINR, second_real_reword = models.alloc_users(userPos,dronePos,args.fc,args.dAngle,args.N0,args.BW,args.Pt,args.connectThresh)
                 dronePos = second_state%args.length
-                Q_table[k] = Q.update_Q_table(Q_table[k], initial_state[k][:2], initial_action, initial_table_reword, second_state[k][:2], second_table_reword, second_real_reword['total'])
+                if j<=args.step*3/4 or j>args.step*4/5:
+                    Q_table[k] = Q.update_Q_table(Q_table[k], initial_state[k][:2], initial_action, initial_table_reword, second_state[k][:2], second_table_reword, second_real_reword['total'])
                 rewords = initial_real_reword['total']
                 save_Q_table(Q_table, SINR, initial_real_reword, action, dronePos, str(i),str(j), str(k), args.database_name, args.collection_name)
             counter += 1
